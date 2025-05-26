@@ -8,16 +8,17 @@ import Loader from "./components/Loader/Loader";
 import ErrorMessage from "./components/ErrorMessage/ErrorMessage";
 import toast from "react-hot-toast";
 import ImageModal from "./components/ImageModal/ImageModal";
+import { Image } from "./types/Image";
 
 function App() {
-  const [images, setImages] = useState([]);
-  const [query, setQuery] = useState("");
-  const [page, setPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
-  const [totalPages, setTotalPages] = useState(0);
-  const [isError, setIsError] = useState(false);
-  const [modalImage, setModalImage] = useState(null);
-  const galleryRef = useRef(null);
+  const [images, setImages] = useState<Image[]>([]);
+  const [query, setQuery] = useState<string>("");
+  const [page, setPage] = useState<number>(1);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [isError, setIsError] = useState<boolean>(false);
+  const [modalImage, setModalImage] = useState<Image | null>(null);
+  const galleryRef = useRef<HTMLUListElement | null>(null);
 
   useEffect(() => {
     if (!query) return;
@@ -30,7 +31,7 @@ function App() {
         const data = await fetchImages(query, page, abortController.signal);
         setImages((prev) => [...prev, ...data.results]);
         setTotalPages(data.total_pages);
-      } catch (error) {
+      } catch (error: any) {
         console.log(error);
         if (error.code !== "ERR_CANCELED") {
           setIsError(true);
@@ -46,22 +47,23 @@ function App() {
     };
   }, [query, page]);
 
-  const handleChangeQuery = (newQuery) => {
+  const handleChangeQuery = (newQuery: string): void => {
     setQuery(newQuery);
     setImages([]);
     setPage(1);
   };
 
-  const openModal = (image) => {
+  const openModal = (image: Image): void => {
     setModalImage(image);
   };
 
-  const closeModal = () => {
+  const closeModal = (): void => {
     setModalImage(null);
   };
 
-  const scrollPage = () => {
-    const firstImg = galleryRef.current?.firstElementChild;
+  const scrollPage = (): void => {
+    const firstImg = galleryRef.current
+      ?.firstElementChild as HTMLElement | null;
     if (firstImg) {
       const { height } = firstImg.getBoundingClientRect();
       window.scrollBy({
@@ -85,10 +87,10 @@ function App() {
         <ImageModal
           isOpen={!!modalImage}
           onClose={closeModal}
-          imageUrl={modalImage.urls.regular}
-          alt={modalImage.urls.alt_description}
-          autorName={modalImage.user.name}
-          instagram={modalImage.user.instagram_username}
+          imageUrl={modalImage.urls.regular ?? ""}
+          alt={modalImage.alt_description}
+          autorName={modalImage.user?.name ?? "Unknown"}
+          instagram={modalImage.user?.instagram_username ?? "N/A"}
         />
       )}
     </div>

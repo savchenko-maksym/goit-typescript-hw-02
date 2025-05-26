@@ -4,7 +4,16 @@ import s from "./ImageModal.module.css";
 
 Modal.setAppElement("#root");
 
-const ImageModal = ({
+interface ImageModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  imageUrl: string;
+  alt: string;
+  autorName: string;
+  instagram?: string;
+}
+
+const ImageModal: React.FC<ImageModalProps> = ({
   isOpen,
   onClose,
   imageUrl,

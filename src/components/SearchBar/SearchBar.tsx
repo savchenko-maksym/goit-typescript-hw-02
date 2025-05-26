@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { ChangeEvent, FormEvent, useState } from "react";
 import { BiSearchAlt2 } from "react-icons/bi";
 import s from "./SearchBar.module.css";
 import toast, { Toaster } from "react-hot-toast";
 
-const SearchBar = ({ handleChangeQuery }) => {
-  const [query, setQuery] = useState("");
+interface SearchBarProps {
+  handleChangeQuery: (query: string) => void;
+}
 
-  const handleSubmit = (e) => {
+const SearchBar: React.FC<SearchBarProps> = ({ handleChangeQuery }) => {
+  const [query, setQuery] = useState<string>("");
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (query.trim() === "") {
@@ -14,9 +18,7 @@ const SearchBar = ({ handleChangeQuery }) => {
       return;
     }
 
-    console.log(query);
     handleChangeQuery(query);
-
     setQuery("");
   };
 
@@ -32,7 +34,9 @@ const SearchBar = ({ handleChangeQuery }) => {
           autoFocus
           placeholder="Search images and photos"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setQuery(e.target.value)
+          }
         />
       </form>
       <Toaster position="top-center" />
